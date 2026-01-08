@@ -56,33 +56,34 @@ CREATE TABLE IF NOT EXISTS issues (
   FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
--- Insert the first admin user (replace <bcrypt-hash-here> with your generated hash)
+
+-- Insert the first admin user (replace <sha256-hash-here> with your generated hash)
 INSERT INTO users (name, email, password, role)
 VALUES (
   'Super Admin',
   'admin@mail.com',
-  '<bcrypt-hash-here>',
+  '<sha256-hash-here>',
   'ADMIN'
 );
 ```
 
-### How to generate a bcrypt hash for the admin password
+### How to generate a SHA-256 hash for the admin password
 
 #### Example Node.js REPL Session
 
 ```
-> const bcrypt = require("bcrypt");
+> const crypto = require("crypto");
 undefined
 > const password = "2424";
 undefined
-> const hashedPassword = bcrypt.hashSync(password, 10);
+> const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
 undefined
 > console.log(hashedPassword);
-$2b$10$eD4ogUYkDakXZV507mtdF.NhqQFnb9XSvG2o.i4D/KPvw0kAsVwSW
+e3a2b8e2e7e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8
 undefined
 ```
 
-Copy the hash (e.g., `$2b$10$eD4ogUYkDakXZV507mtdF.NhqQFnb9XSvG2o.i4D/KPvw0kAsVwSW`) and use it in your SQL insert statement.
+Copy the hash (e.g., `e3a2b8e2e7e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8`) and use it in your SQL insert statement.
 
 1. Open a Node.js REPL or create a quick script:
 
@@ -96,29 +97,16 @@ node
 
 Then enter:
 
-**For CommonJS projects:**
-
 ```
-const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const password = "your_admin_password";
-const hashedPassword = bcrypt.hashSync(password, 10);
+const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
 console.log(hashedPassword);
 ```
-
-**For ESM projects (Node.js REPL):**
-
-```
-const { default: bcrypt } = await import("bcrypt");
-const password = "your_admin_password";
-const hashedPassword = bcrypt.hashSync(password, 10);
-console.log(hashedPassword);
-```
-
-If you get a syntax error with `import`, use the dynamic import example above.
 
 **Option 2: Quick Script**
 
-Create a file named `hash.js` with one of the above code blocks (choose import or require based on your Node.js setup), then run:
+Create a file named `hash.js` with the above code, then run:
 
 ```
 node hash.js
@@ -132,7 +120,7 @@ You can use your generated hash, or copy and use this example directly:
 
 ```sql
 INSERT INTO users (name, email, password, role)
-VALUES ('Super Admin', 'admin@mail.com', '$2b$10$eD4ogUYkDakXZV507mtdF.NhqQFnb9XSvG2o.i4D/KPvw0kAsVwSW', 'ADMIN');
+VALUES ('Super Admin', 'admin@mail.com', 'e3a2b8e2e7e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8', 'ADMIN');
 ```
 
 Replace the hash with your own if you want a different password.
@@ -176,4 +164,4 @@ The server will run on the port specified in your code (default: 5000).
 ## License
 
 MIT
-"# issue-tracker-backend" 
+"# issue-tracker-backend"

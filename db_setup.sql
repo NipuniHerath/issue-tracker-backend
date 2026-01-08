@@ -1,13 +1,14 @@
 -- Issue Tracker Database Setup Script
 --
--- To insert the admin user, you need a bcrypt hash of your chosen password.
--- See the README.md for instructions on generating a bcrypt hash using Node.js.
+
+-- To insert the admin user, you need a SHA-256 hash of your chosen password.
+-- See the README.md for instructions on generating a SHA-256 hash using Node.js.
 -- Example steps:
 --   1. Open Node.js REPL: node
 --   2. Enter:
---        const bcrypt = require("bcrypt");
+--        const crypto = require("crypto");
 --        const password = "your_admin_password";
---        const hashedPassword = bcrypt.hashSync(password, 10);
+--        const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
 --        console.log(hashedPassword);
 --   3. Copy the printed hash and use it below.
 --
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS issues (
   FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
+
 -- Example: Insert an admin user 
 INSERT INTO users (name, email, password, role)
-VALUES ('Super Admin', 'admin@mail.com', '$2b$10$eD4ogUYkDakXZV507mtdF.NhqQFnb9XSvG2o.i4D/KPvw0kAsVwSW', 'ADMIN');
+VALUES ('Super Admin', 'admin@mail.com', SHA2('<<your_admin_password>>', 256), 'ADMIN');
