@@ -16,15 +16,33 @@
 npm install
 ```
 
-### 2. Create a `.env` file (see `.env.example`):
+### 2. Create a `.env` file
+
+Copy the `.env.example` file to `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Then update the values in `.env`:
 
 ```
 DB_HOST=localhost
 DB_USER=your_db_user
 DB_PASSWORD=your_db_password
 DB_NAME=issue_tracker
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_generated_secret
 ```
+
+**To generate a secure JWT_SECRET:**
+
+Run this command in your terminal:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Copy the output and paste it as your `JWT_SECRET` value in the `.env` file.
 
 ### 3. Database Setup
 
@@ -66,64 +84,6 @@ VALUES (
   'ADMIN'
 );
 ```
-
-### How to generate a SHA-256 hash for the admin password
-
-#### Example Node.js REPL Session
-
-```
-> const crypto = require("crypto");
-undefined
-> const password = "2424";
-undefined
-> const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-undefined
-> console.log(hashedPassword);
-e3a2b8e2e7e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8
-undefined
-```
-
-Copy the hash (e.g., `e3a2b8e2e7e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8`) and use it in your SQL insert statement.
-
-1. Open a Node.js REPL or create a quick script:
-
-**Option 1: Node.js REPL**
-
-In your terminal, run:
-
-```
-node
-```
-
-Then enter:
-
-```
-const crypto = require("crypto");
-const password = "your_admin_password";
-const hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-console.log(hashedPassword);
-```
-
-**Option 2: Quick Script**
-
-Create a file named `hash.js` with the above code, then run:
-
-```
-node hash.js
-```
-
-2. Copy the printed hash.
-
-3. Insert the admin into your MySQL database:
-
-You can use your generated hash, or copy and use this example directly:
-
-```sql
-INSERT INTO users (name, email, password, role)
-VALUES ('Super Admin', 'admin@mail.com', 'e3a2b8e2e7e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8e2e8', 'ADMIN');
-```
-
-Replace the hash with your own if you want a different password.
 
 ## Default Admin Login
 
